@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>XHR</title>
+    <script>
+        window.onload = function () {
+            var btnData = document.getElementById("btnGetData");
+            var btnDataAsync = document.getElementById("btnGetDataAsync");
+            var users = document.getElementById("showData");
+            btnData.onclick = function () {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'users.html', false);
+                xhr.send();
+                if (xhr.status !== XMLHttpRequest.DONE) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                } else {
+                    users.innerHTML = xhr.responseText;
+                }
+            }
+            btnDataAsync.onclick = function () {
+                let shower = document.getElementById("showData");
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json', true);
+                xhr.responseType = 'json'
+                xhr.send();
+                xhr.onload = function () {
+                    if (xhr.status != 200) {
+                        alert(`Error ${xhr.status}: ${xhr.statusText}`);
+                    } else {
+                        console.log(xhr.response);
+                        console.log(xhr.response[0]);
+                        console.log(xhr.response[0].txt);
+                        console.log(xhr.response[0]['txt']);
+                        let data = "";
+                        for (let index = 0; index < xhr.response.length; index++) {
+                            let element = `${xhr.response[index].txt}=${xhr.response[index].rate} грн.<br>`
+                            data += element;
+                        }
+                        data += "<br><hr><br>";
+                        shower.innerHTML = data;
+                    }
+                };
+                xhr.onprogress = function (event) {
+                    if (event.lengthComputable) {
+                    } else {
+                    }
+                };
+                xhr.onerror = function () {
+                    alert("Request failed");
+                };
+            }
+        }
+    </script>
+</head>
+<style>
+    body {
+        background: url(https://d39l2hkdp2esp1.cloudfront.net/img/photo/141881/141881_00_2x.jpg);
+        background-size: 100%;
+    }
+  </style>
+  
+<body style="margin: 1% 0 0 0; font-size: 18px; text-align:center;">
+    <button id="btnGetDataAsync" style="background-color: rgb(36, 224, 61)">Показати</button>
+    <button id="btnGetData" style="background-color: red">Зупинка оновлень</button>
+    <div id="showData"> </div>
+</body>
+
+</html>
